@@ -1,29 +1,13 @@
 "use strict";
-class Department {
-    constructor(id, name) {
-        this.id = id;
-        this.name = name;
-        // private name: string;
-        this.employees = [];
-        this.name = name;
+class Person {
+    constructor(n) {
+        this.name = n;
     }
-    addEmployees(employee) {
-        this.employees.push(employee);
-    }
-    privateEmployeeInformation() {
-        console.log(this.employees.length);
-        console.log(this.employees);
+    greet(phrase) {
+        console.log(phrase + ' ' + this.name);
     }
 }
-class ITDepartment extends Department {
-    constructor(id, admins) {
-        super(id, "IT");
-        this.admins = admins;
-        this.admins = admins;
-    }
-}
-const it = new ITDepartment('1', ['Max']);
-it.addEmployees('Max');
-it.addEmployees('Manu');
-it.privateEmployeeInformation();
+let user1;
+user1 = new Person('noble');
+user1.greet('hello');
 //# sourceMappingURL=app.js.map

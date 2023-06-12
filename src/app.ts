@@ -1,30 +1,21 @@
-class Department{
-    // private name: string;
-    private employees : string[] = [];
+interface Greetable {
+    name: string;
+    // age: number;
+    greet(phrase : string): void
+}
 
-    constructor(private readonly id: string, public name: string){
-        this.name = name;
+class Person implements Greetable{
+    name: string;
+    constructor(n: string){
+        this.name  = n;
     }
-
-    addEmployees(employee: string){
-        this.employees.push(employee);
-    }
-    privateEmployeeInformation(){
-        console.log(this.employees.length);
-        console.log(this.employees);
+    greet(phrase: string): void {
+        console.log(phrase + ' ' + this.name);
     }
 }
 
-class ITDepartment extends Department{
-    constructor(id : string, public admins : string[]){
-        super(id, "IT");
-        this.admins = admins;
-    }
-}
+let user1: Greetable;
 
-const it = new ITDepartment('1', ['Max']);
+user1 = new Person('noble')
 
-it.addEmployees('Max');
-it.addEmployees('Manu');
-
-it.privateEmployeeInformation();
+user1.greet('hello');
