@@ -1,29 +1,27 @@
-function Logger(logStr: string){
-    return function(constructor: Function){
-        console.log(logStr);
-        console.log(constructor);
+function Logger(logMsg: string, root: string){
+    return function(construct: any){
+        let target = new construct();
+        console.log(target);
+        // let m = new target();
+        let app = document.getElementById(root)!;
+        app.innerHTML = logMsg;
+
+        console.log('app started by ' + target.name);
+        // target.name
     }
 }
 
-function WithTemplate(template: string, hookId: string){
-    return function(_ : Function){
-        const hookEl = document.getElementById(hookId)!;
-        if(hookId){
-            (hookEl as HTMLDivElement).innerHTML = template
-        }
+@Logger('Testing Logger', 'app')
+class Person{
+    name: string = 'noble';
+    constructor(n: string){
+        // this.name = n;
     }
 }
 
-// @Logger('Loggin Person')
-@WithTemplate('<h1> My Testing </h1>', 'app')
-class Person {
-    name = 'Max';
-
-    constructor(){
-        console.log('creating a persion object');
-    }
-}
-
-const pers = new Person();
+let pers = new Person('noble');
 
 console.log(pers);
+
+
+
