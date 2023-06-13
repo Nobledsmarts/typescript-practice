@@ -9,7 +9,7 @@ function Logger(logMsg: string){
 }
 
 function WithTemplate(logMsg: string, root: string){
-    return function<T extends {new(...args: any[]) : { name : string }}>(originalConstructor: T){
+    return function<T extends {new(...args: any[]): { name: string }}>(originalConstructor: T){
         // let target = new originalConstructor();
         // console.log(target);
         // let m = new target();
@@ -44,15 +44,28 @@ function log(target: any, propertyName: string | symbol){
     console.log(target, propertyName);
 }
 
+function log3(
+    target: any,
+    name: string | Symbol,
+    descriptor: PropertyDescriptor
+) {
+    console.log('Method!');
+    console.log(target);
+
+    console.log(name);
+
+    console.log(descriptor);
+
+}
 
 class Product {
     @log
     title: string;
     private _price: number;
 
-    constructor(){
-        this.title = "";
-        this._price = 100;
+    constructor(title: string, price: number){
+        this.title = title;
+        this._price = price;
     }
 
     set price(price: number) {
@@ -61,3 +74,38 @@ class Product {
         }
     }
 }
+
+const p1 = new Product('Book', 19);
+const p2 = new Product('Book 2', 29);
+
+function addThisMine(target:any, methodName: string | Symbol, descriptor: PropertyDescriptor){
+    console.log(target);
+    let constructor = new target.constructor();
+    return { ...descriptor, value: descriptor.value.bind(constructor) }
+}
+
+function addThis(_:any, _2: string | Symbol, descriptor: PropertyDescriptor){
+    console.log(descriptor);
+    const originalMethod = descriptor.value;
+    const adjDescriptor: PropertyDescriptor = {
+        configurable: true,
+        enumerable: false,
+        get(){
+            const boundFn = originalMethod.bind(this);
+            return boundFn
+
+        }
+    }
+    return adjDescriptor;
+}
+class Printer {
+    public message:string = 'Hello world'
+    @addThis
+    showMessage():void{
+        console.log(this.message);
+    }
+}
+const p = new Printer();
+const button = document.querySelector('button')!;
+
+(button as HTMLButtonElement).addEventListener('click', p.showMessage);
