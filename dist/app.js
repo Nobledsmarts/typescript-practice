@@ -24,4 +24,19 @@ function extractAndConvert(obj, key) {
 console.log(extractAndConvert({
     name: 'nob'
 }, 'name'));
+class DataStorage {
+    constructor() {
+        this.data = [];
+    }
+    addItem(item) {
+        this.data.push;
+    }
+    removeItem(item) {
+        this.data.splice(this.data.indexOf(item), 1);
+    }
+    getItems() {
+        return Object.assign({}, this.data);
+    }
+}
+const textStorage = new DataStorage();
 //# sourceMappingURL=app.js.map
