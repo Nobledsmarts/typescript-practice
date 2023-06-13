@@ -1,42 +1,34 @@
 "use strict";
-const names = ['Max', "Manuel"];
-const names1 = ['1', '2'];
-const names2 = ['1', '2'];
-function merge(objA, objB) {
-    return Object.assign(Object.assign({}, objA), objB);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+function Logger(logStr) {
+    return function (constructor) {
+        console.log(logStr);
+        console.log(constructor);
+    };
 }
-const merged = merge({ name: 'mm', hobbies: ['mm'] }, { age: 80 });
-console.log(merged);
-function countAndDescribe(element) {
-    let descriptionText = "Got no value";
-    if (element.length === 1) {
-        descriptionText = "Got 1 element";
-    }
-    else if (element.length > 1) {
-        descriptionText = "Got " + element.length + ' elements';
-    }
-    return [element, descriptionText];
+function WithTemplate(template, hookId) {
+    return function (_) {
+        const hookEl = document.getElementById(hookId);
+        if (hookId) {
+            hookEl.innerHTML = template;
+        }
+    };
 }
-console.log(countAndDescribe(['Hi', 'there']));
-function extractAndConvert(obj, key) {
-    return 'Value ' + obj[key];
-}
-console.log(extractAndConvert({
-    name: 'nob'
-}, 'name'));
-class DataStorage {
+// @Logger('Loggin Person')
+let Person = class Person {
     constructor() {
-        this.data = [];
+        this.name = 'Max';
+        console.log('creating a persion object');
     }
-    addItem(item) {
-        this.data.push;
-    }
-    removeItem(item) {
-        this.data.splice(this.data.indexOf(item), 1);
-    }
-    getItems() {
-        return Object.assign({}, this.data);
-    }
-}
-const textStorage = new DataStorage();
+};
+Person = __decorate([
+    WithTemplate('<h1> My Testing </h1>', 'app')
+], Person);
+const pers = new Person();
+console.log(pers);
 //# sourceMappingURL=app.js.map
