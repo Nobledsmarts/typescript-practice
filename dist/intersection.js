@@ -1,7 +1,7 @@
 "use strict";
-const e1 = {
+const e11 = {
     name: 'nob',
     privileges: ['mmmm'],
     startDate: new Date()
 };
-//# sourceMappingURL=app.js.map
+//# sourceMappingURL=intersection.js.map
