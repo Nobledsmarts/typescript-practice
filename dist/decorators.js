@@ -125,7 +125,7 @@ function PositiveNumber(target, propName) {
             'positive'
         ] });
 }
-function validate(obj) {
+function _validate(obj) {
     const objValidatorConfig = registeredValidators[obj.constructor.name];
     if (!objValidatorConfig) {
         return true;
@@ -165,7 +165,7 @@ courseForm === null || courseForm === void 0 ? void 0 : courseForm.addEventListe
     const price = +priceEl.value;
     const createdCourse = new Course(title, price);
     console.log(registeredValidators);
-    if (!validate(createdCourse)) {
+    if (!_validate(createdCourse)) {
         alert('invalid input');
         return;
     }
