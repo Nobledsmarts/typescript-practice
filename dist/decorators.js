@@ -101,11 +101,29 @@ const p = new Printer();
 const button = document.querySelector('button');
 button.addEventListener('click', p.showMessage);
 const registeredValidators = {};
+// registeredValidators[target.constructor.name] = {
+//     ...registeredValidators[target.constructor.name],
+//     [propName] : ['required']
+// }
 function Required(target, propName) {
-    registeredValidators[target.constructor.name] = Object.assign(Object.assign({}, registeredValidators[target.constructor.name]), { [propName]: ['required'] });
+    registeredValidators[target.constructor.name] = Object.assign(Object.assign({}, (registeredValidators[target.constructor.name] ?
+        registeredValidators[target.constructor.name] : {})), { [propName]: [
+            ...(registeredValidators[target.constructor.name] ?
+                registeredValidators[target.constructor.name][propName] ?
+                    registeredValidators[target.constructor.name][propName] : []
+                : []),
+            'required'
+        ] });
 }
 function PositiveNumber(target, propName) {
-    registeredValidators[target.constructor.name] = Object.assign(Object.assign({}, registeredValidators[target.constructor.name]), { [propName]: ['postive'] });
+    registeredValidators[target.constructor.name] = Object.assign(Object.assign({}, (registeredValidators[target.constructor.name]
+        ? registeredValidators[target.constructor.name] : {})), { [propName]: [
+            ...(registeredValidators[target.constructor.name] ?
+                registeredValidators[target.constructor.name][propName] ?
+                    registeredValidators[target.constructor.name][propName] : []
+                : []),
+            'positive'
+        ] });
 }
 function validate(obj) {
     const objValidatorConfig = registeredValidators[obj.constructor.name];
@@ -135,6 +153,7 @@ __decorate([
     Required
 ], Course.prototype, "title", void 0);
 __decorate([
+    Required,
     PositiveNumber
 ], Course.prototype, "price", void 0);
 const courseForm = document.querySelector('form');
@@ -145,6 +164,7 @@ courseForm === null || courseForm === void 0 ? void 0 : courseForm.addEventListe
     const title = titleEl.value;
     const price = +priceEl.value;
     const createdCourse = new Course(title, price);
+    console.log(registeredValidators);
     if (!validate(createdCourse)) {
         alert('invalid input');
         return;
