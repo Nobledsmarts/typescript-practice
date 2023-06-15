@@ -1,6 +1,7 @@
 //Project state Management
 
 class ProjectState {
+    private listeners: any[] = [];
     private projects: any[] = [];
     private static instance: ProjectState;
 
@@ -16,6 +17,10 @@ class ProjectState {
         return this.instance;
     }
 
+    addListener(listenerFn: Function){
+        this.listeners.push(listenerFn);
+    }
+
     addProjects(title: string, description: string, numOfPeople: number){
         const newProject = {
             id: Math.random().toString(),
@@ -24,10 +29,13 @@ class ProjectState {
             people: numOfPeople
         }
         this.projects.push(newProject);
+        for(const listenerFn of this.listeners){
+            listenerFn(this.projects.slice());
+        }
     }
 }
 
-// const project
+const projectState = ProjectState.getInstance();
 
 //Validation
 
@@ -221,15 +229,11 @@ class ProjectInput{
 
         if(Array.isArray(userInput)){
             const [title, desc, people] = userInput;
-
-            console.log(title, desc, people);
-
+            projectState.addProjects(title, desc, people);
             // this.clearInputs();
         }
-
-        // console.log(this.titleInputElement.value);
     }
-    
+
     private configure(){
         this.element.addEventListener('submit', this.submitHandler);
     }

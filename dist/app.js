@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 class ProjectState {
     constructor() {
+        this.listeners = [];
         this.projects = [];
     }
     static getInstance() {
@@ -17,6 +18,9 @@ class ProjectState {
         this.instance = new ProjectState();
         return this.instance;
     }
+    addListener(listenerFn) {
+        this.listeners.push(listenerFn);
+    }
     addProjects(title, description, numOfPeople) {
         const newProject = {
             id: Math.random().toString(),
@@ -25,8 +29,12 @@ class ProjectState {
             people: numOfPeople
         };
         this.projects.push(newProject);
+        for (const listenerFn of this.listeners) {
+            listenerFn(this.projects.slice());
+        }
     }
 }
+const projectState = ProjectState.getInstance();
 function validate(validatableInput) {
     let isValid = true;
     if (validatableInput.required) {
@@ -134,10 +142,9 @@ class ProjectInput {
         const userInput = this.gatherUserInput();
         if (Array.isArray(userInput)) {
             const [title, desc, people] = userInput;
-            console.log(title, desc, people);
+            projectState.addProjects(title, desc, people);
             // this.clearInputs();
         }
-        // console.log(this.titleInputElement.value);
     }
     configure() {
         this.element.addEventListener('submit', this.submitHandler);
