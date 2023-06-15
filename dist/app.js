@@ -10,6 +10,13 @@ class ProjectState {
     constructor() {
         this.projects = [];
     }
+    static getInstance() {
+        if (this.instance) {
+            return this.instance;
+        }
+        this.instance = new ProjectState();
+        return this.instance;
+    }
     addProjects(title, description, numOfPeople) {
         const newProject = {
             id: Math.random().toString(),
