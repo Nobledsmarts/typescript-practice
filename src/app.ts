@@ -17,19 +17,24 @@ class Project {
 
 //Project state Management
 
-type Listener = (items: Project[]) => void;
+type Listener<T> = (items: T[]) => void;
 
+class State<T> {
+    protected listeners: Listener<T>[] = [];
 
+    addListener(listenerFn: Listener<T>) {
+        this.listeners.push(listenerFn);
+    }
+}
 
-class ProjectState {
-    private listeners: Listener[] = [];
+class ProjectState extends State<Project>{
     private projects: Project[] = [];
     private static instance: ProjectState;
 
     private constructor(){
-
+        super();
     }
-
+    
     static getInstance(){
         if(this.instance){
             return this.instance;
@@ -38,7 +43,7 @@ class ProjectState {
         return this.instance;
     }
 
-    addListener(listenerFn: Listener){
+    addListener(listenerFn: Listener<Project>){
         this.listeners.push(listenerFn);
     }
 
@@ -180,31 +185,39 @@ abstract class Component<T extends HTMLElement, U extends HTMLElement>{
     hostElement: T;
     element: U;
 
+
     constructor(
         templateId: string, 
         hostElementId: string, 
         insertAtStart: boolean,
         newElementId?: string
     ) {
+        
+
         this.templateElement = document.getElementById(
             templateId,
         )! as HTMLTemplateElement;
         this.hostElement = document.getElementById(
             hostElementId,
         )! as T
+       
+        const importedNode = document.importNode(
+            this.templateElement.content, 
+            true
+        );
 
-        const importedNode = document.importNode(this.templateElement.content, insertAtStart);
 
         this.element = importedNode.firstElementChild as U;
+        
         if(newElementId) {
-            this.element.id = `${newElementId}-projects`;
+            this.element.id = newElementId;
         }
 
         this.attach(insertAtStart);
         
     }
     private attach(insertAtBeginning: boolean){
-        this.hostElement.insertAdjacentElement(insertAtBeginning? 'afterbegin' : 'beforebegin', this.element)
+        this.hostElement.insertAdjacentElement(insertAtBeginning ? 'afterbegin' : 'beforebegin', this.element)
     }
     abstract configure(): void;
     abstract renderContent(): void;
@@ -214,11 +227,14 @@ abstract class Component<T extends HTMLElement, U extends HTMLElement>{
 //Project List class
 
 class ProjectList extends Component<HTMLDivElement, HTMLElement> {
-    assignedProjects: any[];
+    assignedProjects: Project[];
+    _type: string;
 
     constructor(private type : 'active' | 'finished') {
+        console.log(type);
         super('project-list', 'app', false, `${type}-projects`);
         this.assignedProjects = [];
+        this._type = type;
         
         this.configure();
         this.renderContent();
@@ -248,9 +264,10 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
     }
 
     renderContent(){
-        const listId = `${this.type}-projects-list`;
+        const listId = `${this._type}-projects-list`;
         this.element.querySelector('ul')!.id = listId;
-        this.element.querySelector('h2')!.textContent = this.type.toUpperCase() + ' PROJECTS';
+        this.element.querySelector('h2')!.textContent = 
+        this.type.toUpperCase() + ' PROJECTS';
     }
    
 }
