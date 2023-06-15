@@ -65,6 +65,30 @@ function required(target, propName) {
                 []), 'required'] });
     // console.log(propName);
 }
+//Project List class
+class ProjectList {
+    constructor(type) {
+        this.type = type;
+        this.templateElement = document.getElementById('project-list');
+        this.hostElement = document.getElementById('app');
+        const importedNode = document.importNode(this.templateElement.content, true);
+        this.element = importedNode.firstElementChild;
+        this.element.id = `${this.type}-projects`;
+        // this.titleInputElement = (this.element.querySelector('#title') as HTMLInputElement);
+        // this.descriptionInputElement = (this.element.querySelector('#description') as HTMLInputElement);
+        // this.peopleInputElement = (this.element.querySelector('#people') as HTMLInputElement);
+        this.attach();
+        this.renderContent();
+    }
+    renderContent() {
+        const listId = `${this.type}-projects-list`;
+        this.element.querySelector('ul').id = listId;
+        this.element.querySelector('h2').textContent = this.type.toUpperCase() + ' PROJECTS';
+    }
+    attach() {
+        this.hostElement.insertAdjacentElement('afterbegin', this.element);
+    }
+}
 class ProjectInput {
     constructor() {
         this.enteredTitle = "";
