@@ -30,6 +30,7 @@ class ProjectState {
         };
         this.projects.push(newProject);
         for (const listenerFn of this.listeners) {
+            // console.log('added - fn');
             listenerFn(this.projects.slice());
         }
     }
@@ -100,14 +101,27 @@ class ProjectList {
         this.type = type;
         this.templateElement = document.getElementById('project-list');
         this.hostElement = document.getElementById('app');
+        this.assignedProjects = [];
         const importedNode = document.importNode(this.templateElement.content, true);
         this.element = importedNode.firstElementChild;
         this.element.id = `${this.type}-projects`;
         // this.titleInputElement = (this.element.querySelector('#title') as HTMLInputElement);
         // this.descriptionInputElement = (this.element.querySelector('#description') as HTMLInputElement);
         // this.peopleInputElement = (this.element.querySelector('#people') as HTMLInputElement);
+        projectState.addListener((projects) => {
+            this.assignedProjects = projects;
+            this.renderProjects();
+        });
         this.attach();
         this.renderContent();
+    }
+    renderProjects() {
+        const listEl = document.getElementById(`${this.type}-projects-list`);
+        for (const prjItem of this.assignedProjects) {
+            const listItem = document.createElement('li');
+            listItem.textContent = prjItem.title;
+            listEl === null || listEl === void 0 ? void 0 : listEl.appendChild(listItem);
+        }
     }
     renderContent() {
         const listId = `${this.type}-projects-list`;
@@ -120,9 +134,6 @@ class ProjectList {
 }
 class ProjectInput {
     constructor() {
-        this.enteredTitle = "";
-        this.enteredDescription = "";
-        this.enteredPeople = "";
         this.templateElement = document.getElementById('project-input');
         this.hostElement = document.getElementById('app');
         const importedNode = document.importNode(this.templateElement.content, true);
@@ -187,16 +198,6 @@ class ProjectInput {
         this.peopleInputElement.value = '';
     }
 }
-__decorate([
-    required
-], ProjectInput.prototype, "enteredTitle", void 0);
-__decorate([
-    required,
-    minLength(20)
-], ProjectInput.prototype, "enteredDescription", void 0);
-__decorate([
-    required
-], ProjectInput.prototype, "enteredPeople", void 0);
 __decorate([
     autobind
 ], ProjectInput.prototype, "submitHandler", null);
