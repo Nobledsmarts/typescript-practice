@@ -1,4 +1,5 @@
 "use strict";
+//Drag & Drop Interfaces
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -141,7 +142,13 @@ class ProjectItem extends Component {
         }
         return `${this.project.people} persons`;
     }
+    dragStartHandler(event) {
+    }
+    dragEndHandler(_) {
+    }
     configure() {
+        this.element.addEventListener('dragstart', this.dragStartHandler);
+        this.element.addEventListener('dragend', this.dragEndHandler);
     }
     renderContent() {
         this.element.querySelector('h2').textContent = this.project.title;
@@ -149,6 +156,12 @@ class ProjectItem extends Component {
         this.element.querySelector('p').textContent = this.project.description;
     }
 }
+__decorate([
+    autobind
+], ProjectItem.prototype, "dragStartHandler", null);
+__decorate([
+    autobind
+], ProjectItem.prototype, "dragEndHandler", null);
 //Project List class
 class ProjectList extends Component {
     // _type: string;
