@@ -1,37 +1,35 @@
 "use strict";
+//Validation
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-const validations = {};
-function validate(targetClass) {
+function validate(validatableInput) {
     let isValid = true;
-    let errors = {};
-    for (let props in validations[targetClass.constructor.name]) {
-        for (let rules of validations[targetClass.constructor.name][props]) {
-            let rule = rules.split(':');
-            switch (rule[0]) {
-                case 'required':
-                    isValid = !!(targetClass[props]);
-                    errors = isValid ?
-                        errors :
-                        setErrors(errors, props, props + ' is Required!');
-                    break;
-                case 'minLength':
-                    let params = JSON.parse(rule[1]);
-                    isValid = (targetClass[props].length >= params[0]);
-                    errors = isValid ?
-                        errors :
-                        setErrors(errors, props, props + ' Minimum Length must be ' + params[0] + ' characters');
-                    break;
-            }
-        }
+    if (validatableInput.required) {
+        isValid = isValid && validatableInput.value.toString().trim().length !== 0;
     }
-    // console.log([isValid, errors]);
-    return [isValid, errors];
+    if (validatableInput.minLength != null &&
+        typeof validatableInput.value === 'string') {
+        isValid = isValid && validatableInput.value.length > validatableInput.minLength;
+    }
+    if (validatableInput.maxLength != null &&
+        typeof validatableInput.value === 'string') {
+        isValid = isValid && validatableInput.value.length < validatableInput.maxLength;
+    }
+    if (validatableInput.min != null &&
+        typeof validatableInput.value === 'number') {
+        isValid = isValid && validatableInput.value > validatableInput.min;
+    }
+    if (validatableInput.max != null &&
+        typeof validatableInput.value === 'number') {
+        isValid = isValid && validatableInput.value < validatableInput.max;
+    }
+    return isValid;
 }
+const validations = {};
 function setErrors(errors, props, msg) {
     return Object.assign(Object.assign({}, errors), { [props]: [
             ...(errors[props] ? errors[props] : []),

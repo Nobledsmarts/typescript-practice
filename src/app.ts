@@ -1,3 +1,47 @@
+//Validation
+
+interface Validatable {
+    value: string | number;
+    required?: boolean;
+    minLength?: number;
+    maxLength?: number;
+    min?: number;
+    max?: number
+}
+
+function validate(validatableInput: Validatable) {
+    let isValid = true;
+    if(validatableInput.required){
+        isValid = isValid && validatableInput.value.toString().trim().length !== 0;
+    }
+    if(
+        validatableInput.minLength != null && 
+        typeof validatableInput.value === 'string'
+    ) {
+        isValid = isValid && validatableInput.value.length > validatableInput.minLength;
+    }
+    if(
+        validatableInput.maxLength != null && 
+        typeof validatableInput.value === 'string'
+    ) {
+        isValid = isValid && validatableInput.value.length < validatableInput.maxLength;
+    }
+    if(
+        validatableInput.min != null && 
+        typeof validatableInput.value === 'number'
+    ) {
+        isValid = isValid && validatableInput.value > validatableInput.min;
+    }
+    if(
+        validatableInput.max != null && 
+        typeof validatableInput.value === 'number'
+    ) {
+        isValid = isValid && validatableInput.value < validatableInput.max;
+    }
+    return isValid;
+}
+
+
 interface ValidatorOptions {
     [className: string] : {
         [validatableProp: string] : string[];
@@ -5,33 +49,6 @@ interface ValidatorOptions {
 }
 const validations: ValidatorOptions = {};
 
-function validate(targetClass: any): [boolean, {}]{
-    let isValid:boolean = true;
-    let errors:object = {};
-    for(let props in validations[targetClass.constructor.name]){
-        for (let rules of validations[targetClass.constructor.name][props]){
-            let rule = rules.split(':');
-            switch(rule[0]){
-                case 'required' :
-                    isValid = !!(targetClass[props]);
-                    errors = isValid ? 
-                        errors :
-                        setErrors(errors, props, props + ' is Required!');
-                break;
-                case 'minLength' : 
-                    let params = JSON.parse(rule[1]);
-                    isValid = (targetClass[props].length >= params[0]);
-                    errors = isValid ? 
-                        errors : 
-                        setErrors(errors, props, props + ' Minimum Length must be ' + params[0] + ' characters');
-                break;
-                
-            }
-        }
-    }
-    // console.log([isValid, errors]);
-    return [isValid, errors];
-}
 
 function setErrors (errors:any, props:string, msg:string){
     return {
