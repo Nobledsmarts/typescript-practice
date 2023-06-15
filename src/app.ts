@@ -1,3 +1,20 @@
+enum ProjectStatus { 
+    Active,
+    finished
+ }
+class Project {
+    constructor(
+        public id: string, 
+        public title: string, 
+        public description: string, 
+        public people: number, 
+        public status: ProjectStatus
+    ) {
+
+    }
+}
+
+
 //Project state Management
 
 class ProjectState {
