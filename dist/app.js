@@ -19,7 +19,6 @@ class Project {
         this.status = status;
     }
 }
-//Project state Management
 class ProjectState {
     constructor() {
         this.listeners = [];
@@ -36,12 +35,7 @@ class ProjectState {
         this.listeners.push(listenerFn);
     }
     addProjects(title, description, numOfPeople) {
-        const newProject = {
-            id: Math.random().toString(),
-            title,
-            description,
-            people: numOfPeople
-        };
+        const newProject = new Project(Math.random().toString(), title, description, numOfPeople, ProjectStatus.Active);
         this.projects.push(newProject);
         for (const listenerFn of this.listeners) {
             // console.log('added - fn');
@@ -123,7 +117,13 @@ class ProjectList {
         // this.descriptionInputElement = (this.element.querySelector('#description') as HTMLInputElement);
         // this.peopleInputElement = (this.element.querySelector('#people') as HTMLInputElement);
         projectState.addListener((projects) => {
-            this.assignedProjects = projects;
+            const relevantProjects = projects.filter(prj => {
+                if (this.type === 'active') {
+                    return prj.status === ProjectStatus.Active;
+                }
+                return prj.status === ProjectStatus.finished;
+            });
+            this.assignedProjects = relevantProjects;
             this.renderProjects();
         });
         this.attach();
@@ -131,6 +131,7 @@ class ProjectList {
     }
     renderProjects() {
         const listEl = document.getElementById(`${this.type}-projects-list`);
+        listEl.innerHTML = '';
         for (const prjItem of this.assignedProjects) {
             const listItem = document.createElement('li');
             listItem.textContent = prjItem.title;
